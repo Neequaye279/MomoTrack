@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'view/screens/welcome_screen.dart';
+import 'view/screens/permissions_screen.dart';
 import 'view/theme/theme.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF080A0F),
       ),
       themeMode: ThemeMode.system,
-      home: WelcomeScreen(),
+      home: PermissionsScreen(),
     );
   }
 }
