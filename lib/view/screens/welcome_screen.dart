@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/graph_painter.dart';
-import 'package:momo_track/view/widgets/welcome_screen_button.dart';
+import 'package:momo_track/view/widgets/screen_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
