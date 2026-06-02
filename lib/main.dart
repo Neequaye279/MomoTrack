@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'view/screens/welcome_screen.dart';
-import 'view/screens/permissions_screen.dart';
 import 'view/theme/theme.dart';
+import 'view/screens/splash_screen.dart';
+import 'view/screens/permissions_screen.dart';
+import 'view/screens/welcome_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,7 +26,12 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF080A0F),
       ),
       themeMode: ThemeMode.system,
-      home: PermissionsScreen(),
+      initialRoute: '/',
+      routes: {
+        '/permissions': (context) => PermissionsScreen(),
+        '/welcome': (context) => WelcomeScreen(),
+      },
+      home: SplashScreen(),
     );
   }
 }
