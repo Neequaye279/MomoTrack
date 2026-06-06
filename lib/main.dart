@@ -3,6 +3,7 @@ import 'view/theme/theme.dart';
 import 'view/screens/splash_screen.dart';
 import 'view/screens/permissions_screen.dart';
 import 'view/screens/welcome_screen.dart';
+import 'view/screens/login_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/permissions': (context) => PermissionsScreen(),
         '/welcome': (context) => WelcomeScreen(),
+        '/login': (context) => LoginScreen(),
       },
-      home: SplashScreen(),
+      home: LoginScreen(),
     );
   }
 }
