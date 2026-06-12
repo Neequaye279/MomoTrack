@@ -3,8 +3,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/pin_dots.dart';
 import 'package:momo_track/view/widgets/numpad.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class PinLoginScreen extends StatelessWidget {
+  const PinLoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

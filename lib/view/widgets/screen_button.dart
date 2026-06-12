@@ -20,7 +20,7 @@ class ScreenButton extends StatelessWidget {
         backgroundColor: background,
         foregroundColor: foreground,
         minimumSize: Size(double.infinity, 56),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
         elevation: 0,
       ),
       child: Text(

@@ -22,18 +22,6 @@ class NumPad extends StatelessWidget {
               border: Border.all(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  offset: const Offset(3, 3),
-                  blurRadius: 3,
-                ),
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.05),
-                  offset: const Offset(-2, -2),
-                  blurRadius: 4,
-                ),
-              ],
             ),
             child: Center(
               child: Text(
