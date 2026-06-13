@@ -177,6 +177,7 @@ class PasswordLoginScreen extends StatelessWidget {
                   buttonText: "Sign In",
                   foreground: Theme.of(context).colorScheme.onPrimary,
                   background: Theme.of(context).colorScheme.primary,
+                  onPressed: () {},
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Center(
