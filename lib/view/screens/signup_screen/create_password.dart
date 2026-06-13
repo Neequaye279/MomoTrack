@@ -199,11 +199,13 @@ class CreatePassword extends StatelessWidget {
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
                       SizedBox(width: 10.0),
-                      Text(
-                        "Never share your password with anyone, including\nsupport.",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          fontSize: 13.0,
+                      Expanded(
+                        child: Text(
+                          "Never share your password with anyone, including support.",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                            fontSize: 13.0,
+                          ),
                         ),
                       ),
                     ],
