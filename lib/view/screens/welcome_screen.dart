@@ -260,8 +260,8 @@ class WelcomeScreen extends StatelessWidget {
                   children: [
                     ScreenButton(
                       buttonText: "Create Account",
-                      background: Theme.of(context).colorScheme.primary,
                       foreground: Theme.of(context).colorScheme.onPrimary,
+                      background: Theme.of(context).colorScheme.primary,
                     ),
                     SizedBox(height: screenHeight * 0.03),
                     ScreenButton(
