@@ -97,7 +97,10 @@ class PinLoginScreen extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/passwordlogin');
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/passwordlogin',
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 11.0),
