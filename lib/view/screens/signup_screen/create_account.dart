@@ -147,7 +147,9 @@ class CreateAccount extends StatelessWidget {
                   buttonText: "Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/verification');
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 Center(

@@ -122,7 +122,9 @@ class Verfication extends StatelessWidget {
                   buttonText: "Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/createpin');
+                  },
                 ),
               ],
             ),

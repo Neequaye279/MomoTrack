@@ -41,6 +41,8 @@ class MyApp extends StatelessWidget {
         '/biometrics': (context) => Biometrics(),
         '/createaccount': (context) => CreateAccount(),
         '/createpassword': (context) => CreatePassword(),
+        '/createpin': (context) => CreatePin(),
+        '/verification': (context) => Verfication(),
       },
       home: SplashScreen(),
     );

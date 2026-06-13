@@ -101,7 +101,12 @@ class CreatePin extends StatelessWidget {
                       ),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/createpassword',
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 11.0),
                             decoration: BoxDecoration(
@@ -166,7 +171,9 @@ class CreatePin extends StatelessWidget {
                   buttonText: "Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/biometrics');
+                  },
                 ),
               ],
             ),
