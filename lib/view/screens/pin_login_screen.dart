@@ -39,7 +39,9 @@ class PinLoginScreen extends StatelessWidget {
                     icon: Icon(LucideIcons.chevronLeft),
                     color: Color(0xFF8B8D98),
                     iconSize: 18.0,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.04),
@@ -93,21 +95,26 @@ class PinLoginScreen extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 11.0),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(11.0),
-                          ),
-                          child: Text(
-                            "Password",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.4),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/passwordlogin');
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 11.0),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(11.0),
+                            ),
+                            child: Text(
+                              "Password",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.4),
+                              ),
                             ),
                           ),
                         ),

@@ -268,6 +268,9 @@ class WelcomeScreen extends StatelessWidget {
                       buttonText: "Sign In",
                       background: Theme.of(context).colorScheme.surface,
                       foreground: Color(0xFF8B8D98),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/pinlogin');
+                      },
                     ),
                   ],
                 ),

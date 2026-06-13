@@ -6,16 +6,18 @@ class ScreenButton extends StatelessWidget {
     required this.buttonText,
     required this.background,
     required this.foreground,
+    this.onPressed,
   });
 
   final String buttonText;
   final Color background;
   final Color foreground;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: background,
         foregroundColor: foreground,

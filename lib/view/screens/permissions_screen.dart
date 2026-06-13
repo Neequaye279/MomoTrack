@@ -74,12 +74,18 @@ class PermissionsScreen extends StatelessWidget {
                   buttonText: "Allow & Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/welcome');
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 ScreenButton(
                   buttonText: "Skip for now",
                   background: Theme.of(context).colorScheme.surface,
                   foreground: Color(0xFF8B8D98),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/welcome');
+                  },
                 ),
               ],
             ),

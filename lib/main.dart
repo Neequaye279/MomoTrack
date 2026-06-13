@@ -4,6 +4,7 @@ import 'view/screens/permissions_screen.dart';
 import 'view/screens/welcome_screen.dart';
 import 'view/screens/pin_login_screen.dart';
 import 'view/screens/password_login_screen.dart';
+import 'view/screens/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,14 +28,13 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF080A0F),
       ),
       themeMode: ThemeMode.system,
-      initialRoute: '/',
       routes: {
         '/permissions': (context) => PermissionsScreen(),
         '/welcome': (context) => WelcomeScreen(),
         '/pinlogin': (context) => PinLoginScreen(),
         '/passwordlogin': (context) => PasswordLoginScreen(),
       },
-      home: PasswordLoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
