@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'view/theme/theme.dart';
 import 'view/screens/permissions_screen.dart';
 import 'view/screens/welcome_screen.dart';
-import 'view/screens/pin_login_screen.dart';
-import 'view/screens/password_login_screen.dart';
+import 'view/screens/login_screen.dart/pin_login_screen.dart';
+import 'view/screens/login_screen.dart/password_login_screen.dart';
+import 'view/screens/signup_screen/biometrics.dart';
 import 'view/screens/signup_screen/create_account.dart';
+import 'view/screens/signup_screen/create_password.dart';
+import 'view/screens/signup_screen/create_pin.dart';
 import 'view/screens/signup_screen/verfication.dart';
+import 'view/screens/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,8 +38,11 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => WelcomeScreen(),
         '/pinlogin': (context) => PinLoginScreen(),
         '/passwordlogin': (context) => PasswordLoginScreen(),
+        '/biometrics': (context) => Biometrics(),
+        '/createaccount': (context) => CreateAccount(),
+        '/createpassword': (context) => CreatePassword(),
       },
-      home: Verfication(),
+      home: SplashScreen(),
     );
   }
 }

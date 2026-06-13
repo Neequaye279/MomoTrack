@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/progress_stepper.dart';
-import 'package:momo_track/view/widgets/pin_dots.dart';
-import 'package:momo_track/view/widgets/numpad.dart';
+import 'package:momo_track/view/widgets/my_textfield.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
+import 'package:momo_track/view/widgets/requirement_row.dart';
 
-class CreatePin extends StatelessWidget {
-  const CreatePin({super.key});
+class CreatePassword extends StatelessWidget {
+  const CreatePassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class CreatePin extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 Text(
-                  "Create your PIN",
+                  "Create a Password",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 28.0,
@@ -63,10 +63,10 @@ class CreatePin extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
-                  "Choose a 6-digit PIN",
+                  "Choose a strong password",
                   style: TextStyle(color: Color(0xFF8B8D98), fontSize: 16.0),
                 ),
-                SizedBox(height: screenHeight * 0.04),
+                SizedBox(height: screenHeight * 0.03),
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
@@ -78,14 +78,42 @@ class CreatePin extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              '/pinlogin',
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(11.0),
+                            ),
+                            child: Text(
+                              "Use PIN",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.4),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                          padding: EdgeInsets.symmetric(vertical: 11.0),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(11.0),
                           ),
                           child: Text(
-                            "Use Pin",
+                            "Use Password",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14.0,
@@ -99,37 +127,57 @@ class CreatePin extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 11.0),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(11.0),
-                            ),
-                            child: Text(
-                              "Use Password",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.02),
-                PinDots(),
-                SizedBox(height: screenHeight * 0.021),
-                NumPad(),
+                SizedBox(height: screenHeight * 0.04),
+                Text(
+                  "PASSWORD",
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF8B8D98),
+                  ),
+                ),
                 SizedBox(height: screenHeight * 0.01),
+                MyTextfield(
+                  hintText: "Create a password",
+                  prefixIcon: Icon(LucideIcons.mail, color: Color(0xFF8B8D98)),
+                  suffixIcon: Icon(LucideIcons.eye, color: Color(0xFF8B8D98)),
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                Text(
+                  "CONFIRM PASSWORD",
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF8B8D98),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                MyTextfield(
+                  hintText: "Re-enter your password",
+                  prefixIcon: Icon(LucideIcons.lock, color: Color(0xFF8B8D98)),
+                  suffixIcon: Icon(LucideIcons.eye, color: Color(0xFF8B8D98)),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RequirementRow(
+                  text: "At least 8 characters",
+                  isCompleted: true,
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                RequirementRow(
+                  text: "One Uppercase letter",
+                  isCompleted: false,
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                RequirementRow(
+                  text: "One Uppercase letter",
+                  isCompleted: false,
+                ),
+                SizedBox(height: screenHeight * 0.03),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14.0),
                   decoration: BoxDecoration(
@@ -152,7 +200,7 @@ class CreatePin extends StatelessWidget {
                       ),
                       SizedBox(width: 10.0),
                       Text(
-                        "Never share your PIN with anyone, including\nsupport.",
+                        "Never share your password with anyone, including\nsupport.",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.tertiary,
                           fontSize: 13.0,
@@ -161,7 +209,7 @@ class CreatePin extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.02),
                 ScreenButton(
                   buttonText: "Continue",
                   background: Theme.of(context).colorScheme.primary,
