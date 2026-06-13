@@ -4,7 +4,8 @@ import 'view/screens/permissions_screen.dart';
 import 'view/screens/welcome_screen.dart';
 import 'view/screens/pin_login_screen.dart';
 import 'view/screens/password_login_screen.dart';
-import 'view/screens/splash_screen.dart';
+import 'view/screens/signup_screen/create_account.dart';
+import 'view/screens/signup_screen/verfication.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/pinlogin': (context) => PinLoginScreen(),
         '/passwordlogin': (context) => PasswordLoginScreen(),
       },
-      home: SplashScreen(),
+      home: Verfication(),
     );
   }
 }

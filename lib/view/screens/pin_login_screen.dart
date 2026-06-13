@@ -23,8 +23,8 @@ class PinLoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 38,
-                  width: 38,
+                  height: 40,
+                  width: 40,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceBright,
                     borderRadius: BorderRadius.circular(12.0),
@@ -38,7 +38,7 @@ class PinLoginScreen extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(LucideIcons.chevronLeft),
                     color: Color(0xFF8B8D98),
-                    iconSize: 18.0,
+                    iconSize: 20.0,
                     onPressed: () {
                       Navigator.pop(context);
                     },
