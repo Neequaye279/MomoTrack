@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "MoMo Track",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: lightMode,
@@ -33,7 +34,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF080A0F),
       ),
       themeMode: ThemeMode.system,
+      initialRoute: '/',
       routes: {
+        '/': (context) => SplashScreen(),
         '/permissions': (context) => PermissionsScreen(),
         '/welcome': (context) => WelcomeScreen(),
         '/pinlogin': (context) => PinLoginScreen(),
@@ -44,7 +47,6 @@ class MyApp extends StatelessWidget {
         '/createpin': (context) => CreatePin(),
         '/verification': (context) => Verfication(),
       },
-      home: SplashScreen(),
     );
   }
 }
