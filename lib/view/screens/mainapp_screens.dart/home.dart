@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:momo_track/view/widgets/balance_card.dart';
+import 'package:momo_track/view/widgets/status_card.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -106,6 +108,30 @@ class Home extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 BalanceCard(balance: 34567.00, weeklyChange: 735),
+                SizedBox(height: screenHeight * 0.05),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    StatusCard(
+                      value: "GHS 1,180",
+                      type: "CASH IN",
+                      icon: LucideIcons.arrowUp,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    StatusCard(
+                      value: "GHS 445",
+                      type: "CASH OUT",
+                      icon: LucideIcons.arrowDown,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    StatusCard(
+                      value: "GHS 735",
+                      type: "PROFIT",
+                      icon: LucideIcons.trendingUp,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
