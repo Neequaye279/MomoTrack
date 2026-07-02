@@ -10,6 +10,11 @@ import 'view/screens/signup_screen/create_password.dart';
 import 'view/screens/signup_screen/create_pin.dart';
 import 'view/screens/signup_screen/verfication.dart';
 import 'view/screens/splash_screen.dart';
+import 'view/screens/mainapp_screens.dart/history.dart';
+import 'view/screens/mainapp_screens.dart/home.dart';
+import 'view/screens/mainapp_screens.dart/reports.dart';
+import 'view/screens/mainapp_screens.dart/settings.dart';
+import 'view/screens/mainapp_screens.dart/main_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,19 +39,25 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF080A0F),
       ),
       themeMode: ThemeMode.system,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => SplashScreen(),
-        '/permissions': (context) => PermissionsScreen(),
-        '/welcome': (context) => WelcomeScreen(),
-        '/pinlogin': (context) => PinLoginScreen(),
-        '/passwordlogin': (context) => PasswordLoginScreen(),
-        '/biometrics': (context) => Biometrics(),
-        '/createaccount': (context) => CreateAccount(),
-        '/createpassword': (context) => CreatePassword(),
-        '/createpin': (context) => CreatePin(),
-        '/verification': (context) => Verfication(),
-      },
+      //initialRoute: '/',
+      home: MainScreen(),
+      //routes: {
+      // '/': (context) => SplashScreen(),
+      // '/permissions': (context) => PermissionsScreen(),
+      // '/welcome': (context) => WelcomeScreen(),
+      // '/pinlogin': (context) => PinLoginScreen(),
+      // '/passwordlogin': (context) => PasswordLoginScreen(),
+      // '/biometrics': (context) => Biometrics(),
+      // '/createaccount': (context) => CreateAccount(),
+      // '/createpassword': (context) => CreatePassword(),
+      // '/createpin': (context) => CreatePin(),
+      // '/verification': (context) => Verfication(),
+      // '/home': (context) => Home(),
+      // '/history': (context) => History(),
+      // '/reports': (context) => Reports(),
+      // '/settings': (context) => Settings(),
+      //'/main': (context) => MainScreen(),
+      //},
     );
   }
 }
