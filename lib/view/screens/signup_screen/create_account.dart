@@ -170,23 +170,29 @@ class CreateAccount extends ConsumerWidget {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.04),
+
                 Center(
-                  child: Text.rich(
-                    TextSpan(
-                      style: TextStyle(fontSize: 14.0),
-                      children: [
-                        TextSpan(
-                          text: "Already have an account? ",
-                          style: TextStyle(color: Color(0xFF8B8D98)),
-                        ),
-                        TextSpan(
-                          text: "Sign In",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/pinlogin');
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        style: TextStyle(fontSize: 14.0),
+                        children: [
+                          TextSpan(
+                            text: "Already have an account? ",
+                            style: TextStyle(color: Color(0xFF8B8D98)),
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            text: "Sign In",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -217,22 +217,28 @@ class PasswordLoginScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Center(
-                  child: Text.rich(
-                    TextSpan(
-                      style: TextStyle(fontSize: 14.0),
-                      children: [
-                        TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(color: Color(0xFF8B8D98)),
-                        ),
-                        TextSpan(
-                          text: "Sign Up",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(loginFormProvider.notifier).clear();
+                      Navigator.pushReplacementNamed(context, '/createaccount');
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        style: TextStyle(fontSize: 14.0),
+                        children: [
+                          TextSpan(
+                            text: "Don't have an account? ",
+                            style: TextStyle(color: Color(0xFF8B8D98)),
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            text: "Sign Up",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
