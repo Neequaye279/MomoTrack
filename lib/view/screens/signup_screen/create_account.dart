@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/progress_stepper.dart';
 import 'package:momo_track/view/widgets/my_textfield.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
+import 'package:momo_track/viewModel/signup_proivder.dart';
 
-class CreateAccount extends StatelessWidget {
+class CreateAccount extends ConsumerWidget {
   const CreateAccount({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -79,6 +81,8 @@ class CreateAccount extends StatelessWidget {
                 MyTextfield(
                   hintText: "Eliakim Neequaye",
                   prefixIcon: Icon(LucideIcons.user),
+                  onChanged: (value) =>
+                      ref.read(signupProvider.notifier).updateFullName(value),
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
@@ -94,6 +98,9 @@ class CreateAccount extends StatelessWidget {
                 MyTextfield(
                   hintText: "024 XXX XXXX",
                   prefixIcon: Icon(LucideIcons.phone),
+                  onChanged: (value) => ref
+                      .read(signupProvider.notifier)
+                      .updatePhoneNumber(value),
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
@@ -109,6 +116,8 @@ class CreateAccount extends StatelessWidget {
                 MyTextfield(
                   hintText: "you@email.com",
                   prefixIcon: Icon(LucideIcons.mail),
+                  onChanged: (value) =>
+                      ref.read(signupProvider.notifier).updateEmail(value),
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Container(
@@ -148,6 +157,15 @@ class CreateAccount extends StatelessWidget {
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
                   onPressed: () {
+                    final data = ref.read(signupProvider);
+                    if (data.fullName.isEmpty ||
+                        data.phoneNumber.isEmpty ||
+                        data.email.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Fill in all fields')),
+                      );
+                      return;
+                    }
                     Navigator.pushNamed(context, '/verification');
                   },
                 ),

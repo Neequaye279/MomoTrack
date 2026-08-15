@@ -4,12 +4,15 @@ import 'package:momo_track/view/widgets/progress_stepper.dart';
 import 'package:momo_track/view/widgets/pin_dots.dart';
 import 'package:momo_track/view/widgets/numpad.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
+import 'package:momo_track/viewModel/pin_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:momo_track/services/auth_service.dart';
 
-class CreatePin extends StatelessWidget {
+class CreatePin extends ConsumerWidget {
   const CreatePin({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -131,9 +134,9 @@ class CreatePin extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                PinDots(),
+                PinDots(provider: createPinProvider),
                 SizedBox(height: screenHeight * 0.021),
-                NumPad(),
+                NumPad(provider: createPinProvider),
                 SizedBox(height: screenHeight * 0.01),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14.0),
@@ -173,8 +176,25 @@ class CreatePin extends StatelessWidget {
                   buttonText: "Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/biometrics');
+                  onPressed: () async {
+                    final pin = ref.read(createPinProvider);
+                    if (pin.length != 6) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Enter a 6-digit PIN')),
+                      );
+                      return;
+                    }
+                    try {
+                      await ref.read(authServiceProvider).setPin(pin);
+                      ref.read(createPinProvider.notifier).clear();
+                      if (context.mounted) {
+                        Navigator.pushNamed(context, '/biometrics');
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to save PIN: $e')),
+                      );
+                    }
                   },
                 ),
               ],

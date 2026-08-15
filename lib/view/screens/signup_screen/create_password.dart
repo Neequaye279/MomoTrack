@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/progress_stepper.dart';
 import 'package:momo_track/view/widgets/my_textfield.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
 import 'package:momo_track/view/widgets/requirement_row.dart';
+import 'package:momo_track/viewModel/password_form_provider.dart';
+import 'package:momo_track/viewModel/signup_proivder.dart';
 
-class CreatePassword extends StatelessWidget {
+class CreatePassword extends ConsumerWidget {
   const CreatePassword({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final passwordState = ref.watch(createPasswordProvider);
+    final isSubmitting = passwordState.status == AuthFormStatus.submitting;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -143,8 +149,11 @@ class CreatePassword extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.01),
                 MyTextfield(
                   hintText: "Create a password",
-                  prefixIcon: Icon(LucideIcons.mail, color: Color(0xFF8B8D98)),
-                  suffixIcon: Icon(LucideIcons.eye, color: Color(0xFF8B8D98)),
+                  prefixIcon: Icon(LucideIcons.lock, color: Color(0xFF8B8D98)),
+                  obscureText: true,
+                  onChanged: (value) => ref
+                      .read(createPasswordProvider.notifier)
+                      .updatePassword(value),
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Text(
@@ -160,22 +169,25 @@ class CreatePassword extends StatelessWidget {
                 MyTextfield(
                   hintText: "Re-enter your password",
                   prefixIcon: Icon(LucideIcons.lock, color: Color(0xFF8B8D98)),
-                  suffixIcon: Icon(LucideIcons.eye, color: Color(0xFF8B8D98)),
+                  obscureText: true,
+                  onChanged: (value) => ref
+                      .read(createPasswordProvider.notifier)
+                      .updateConfirmPassword(value),
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 RequirementRow(
                   text: "At least 8 characters",
-                  isCompleted: true,
+                  isCompleted: passwordState.hasMinLength,
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 RequirementRow(
-                  text: "One Uppercase letter",
-                  isCompleted: false,
+                  text: "One uppercase letter",
+                  isCompleted: passwordState.hasUppercase,
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 RequirementRow(
-                  text: "One Uppercase letter",
-                  isCompleted: false,
+                  text: "One number",
+                  isCompleted: passwordState.hasNumber,
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Container(
@@ -211,14 +223,34 @@ class CreatePassword extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (passwordState.status == AuthFormStatus.error &&
+                    passwordState.errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: screenHeight * 0.015),
+                    child: Text(
+                      passwordState.errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
                 SizedBox(height: screenHeight * 0.02),
                 ScreenButton(
-                  buttonText: "Continue",
+                  buttonText: isSubmitting ? "Please wait..." : "Continue",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/biometrics');
-                  },
+                  onPressed: isSubmitting
+                      ? () {}
+                      : () async {
+                          final email = ref.read(signupProvider).email;
+                          final success = await ref
+                              .read(createPasswordProvider.notifier)
+                              .submit(email);
+                          if (success && context.mounted) {
+                            Navigator.pushNamed(context, '/biometrics');
+                          }
+                        },
                 ),
               ],
             ),

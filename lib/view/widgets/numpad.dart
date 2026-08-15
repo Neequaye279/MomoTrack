@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:momo_track/viewModel/pin_provider.dart';
 
-class NumPad extends StatelessWidget {
-  const NumPad({super.key});
+class NumPad extends ConsumerWidget {
+  final NotifierProvider<PinNotifier, String> provider;
+  final VoidCallback? onBiometricTap;
+
+  const NumPad({super.key, required this.provider, this.onBiometricTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final keys = [
       '1',
       '2',
@@ -29,7 +34,19 @@ class NumPad extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.5,
       children: keys.map((key) {
-        return _NumKey(keyValue: key);
+        return _NumKey(
+          keyValue: key,
+          onTap: () {
+            final notifier = ref.read(provider.notifier);
+            if (key == 'del') {
+              notifier.removeDigit();
+            } else if (key == 'bio') {
+              onBiometricTap?.call();
+            } else {
+              notifier.addDigit(key);
+            }
+          },
+        );
       }).toList(),
     );
   }
@@ -37,8 +54,9 @@ class NumPad extends StatelessWidget {
 
 class _NumKey extends StatelessWidget {
   final String keyValue;
+  final VoidCallback onTap;
 
-  const _NumKey({required this.keyValue});
+  const _NumKey({required this.keyValue, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -48,39 +66,42 @@ class _NumKey extends StatelessWidget {
 
     if (isEmpty) return const SizedBox();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: isBio
-            ? Icon(
-                LucideIcons.fingerprint,
-                size: 26,
-                color: Theme.of(context).colorScheme.onSurface,
-              )
-            : isDel
-            ? Icon(
-                LucideIcons.x,
-                size: 22,
-                color: Theme.of(context).colorScheme.onSurface,
-              )
-            : Text(
-                keyValue,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: isBio
+              ? Icon(
+                  LucideIcons.fingerprint,
+                  size: 26,
                   color: Theme.of(context).colorScheme.onSurface,
+                )
+              : isDel
+              ? Icon(
+                  LucideIcons.x,
+                  size: 22,
+                  color: Theme.of(context).colorScheme.onSurface,
+                )
+              : Text(
+                  keyValue,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

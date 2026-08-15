@@ -1,15 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/pin_dots.dart';
 import 'package:momo_track/view/widgets/numpad.dart';
+import 'package:momo_track/viewModel/pin_provider.dart';
+import 'package:momo_track/viewModel/biometric_provider.dart';
+import 'package:momo_track/services/auth_service.dart';
 
-class PinLoginScreen extends StatelessWidget {
+class PinLoginScreen extends ConsumerStatefulWidget {
   const PinLoginScreen({super.key});
 
   @override
+  ConsumerState<PinLoginScreen> createState() => _PinLoginScreenState();
+}
+
+class _PinLoginScreenState extends ConsumerState<PinLoginScreen> {
+  bool _isVerifying = false;
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen(loginPinProvider, (previous, next) async {
+      if (next.length == 6 && !_isVerifying) {
+        setState(() => _isVerifying = true);
+
+        final isValid = await ref.read(authServiceProvider).verifyPin(next);
+
+        if (!mounted) return;
+
+        if (isValid) {
+          Navigator.pushReplacementNamed(context, '/home');
+          ref.read(biometricProvider.notifier).promptAndEnableInBackground();
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Incorrect PIN')));
+          ref.read(loginPinProvider.notifier).clear();
+        }
+
+        setState(() => _isVerifying = false);
+      }
+    });
+
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -97,6 +131,7 @@ class PinLoginScreen extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
+                            ref.read(loginPinProvider.notifier).clear();
                             Navigator.pushReplacementNamed(
                               context,
                               '/passwordlogin',
@@ -202,8 +237,19 @@ class PinLoginScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                PinDots(),
-                NumPad(),
+                PinDots(provider: loginPinProvider),
+                if (_isVerifying)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2.0),
+                      ),
+                    ),
+                  ),
+                NumPad(provider: loginPinProvider),
               ],
             ),
           ),

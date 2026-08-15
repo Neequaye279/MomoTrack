@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/progress_stepper.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
 import 'package:momo_track/view/widgets/biometric_card.dart';
+import 'package:momo_track/viewModel/biometric_provider.dart';
 
-class Biometrics extends StatelessWidget {
+class Biometrics extends ConsumerWidget {
   const Biometrics({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final biometricState = ref.watch(biometricProvider);
+    final isBusy =
+        biometricState.status == BiometricStatus.checking ||
+        biometricState.status == BiometricStatus.enabling;
+
+    ref.listen(biometricProvider, (previous, next) {
+      if (next.status == BiometricStatus.enabled) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if ((next.status == BiometricStatus.failed ||
+              next.status == BiometricStatus.unsupported) &&
+          next.errorMessage != null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
+      }
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -88,17 +107,27 @@ class Biometrics extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 ScreenButton(
-                  buttonText: "Enable & Get Started",
+                  buttonText: isBusy ? "Checking..." : "Enable & Get Started",
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
-                  onPressed: () {},
+                  onPressed: isBusy
+                      ? () {}
+                      : () {
+                          ref
+                              .read(biometricProvider.notifier)
+                              .enableBiometrics();
+                        },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 ScreenButton(
                   buttonText: "Skip for now",
                   background: Theme.of(context).colorScheme.surface,
                   foreground: Colors.grey,
-                  onPressed: () {},
+                  onPressed: isBusy
+                      ? () {}
+                      : () {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        },
                 ),
               ],
             ),

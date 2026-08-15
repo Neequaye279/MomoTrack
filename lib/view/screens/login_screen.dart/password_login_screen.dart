@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/my_textfield.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
+import 'package:momo_track/viewModel/password_form_provider.dart';
+import 'package:momo_track/viewModel/biometric_provider.dart';
 
-class PasswordLoginScreen extends StatelessWidget {
+class PasswordLoginScreen extends ConsumerWidget {
   const PasswordLoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final loginState = ref.watch(loginFormProvider);
+    final isSubmitting = loginState.status == AuthFormStatus.submitting;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -75,6 +81,7 @@ class PasswordLoginScreen extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
+                            ref.read(loginFormProvider.notifier).clear();
                             Navigator.pushReplacementNamed(
                               context,
                               '/pinlogin',
@@ -139,6 +146,8 @@ class PasswordLoginScreen extends StatelessWidget {
                 MyTextfield(
                   hintText: "your@email.com",
                   prefixIcon: Icon(LucideIcons.mail, color: Color(0xFF8B8D98)),
+                  onChanged: (value) =>
+                      ref.read(loginFormProvider.notifier).updateEmail(value),
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Text(
@@ -154,7 +163,10 @@ class PasswordLoginScreen extends StatelessWidget {
                 MyTextfield(
                   hintText: "Enter your password",
                   prefixIcon: Icon(LucideIcons.lock, color: Color(0xFF8B8D98)),
-                  suffixIcon: Icon(LucideIcons.eye, color: Color(0xFF8B8D98)),
+                  obscureText: true,
+                  onChanged: (value) => ref
+                      .read(loginFormProvider.notifier)
+                      .updatePassword(value),
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Row(
@@ -172,12 +184,36 @@ class PasswordLoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (loginState.status == AuthFormStatus.error &&
+                    loginState.errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: screenHeight * 0.015),
+                    child: Text(
+                      loginState.errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
                 SizedBox(height: screenHeight * 0.04),
                 ScreenButton(
-                  buttonText: "Sign In",
+                  buttonText: isSubmitting ? "Signing in..." : "Sign In",
                   foreground: Theme.of(context).colorScheme.onPrimary,
                   background: Theme.of(context).colorScheme.primary,
-                  onPressed: () {},
+                  onPressed: isSubmitting
+                      ? () {}
+                      : () async {
+                          final success = await ref
+                              .read(loginFormProvider.notifier)
+                              .submit();
+                          if (!success || !context.mounted) return;
+
+                          Navigator.pushReplacementNamed(context, '/home');
+                          ref
+                              .read(biometricProvider.notifier)
+                              .promptAndEnableInBackground();
+                        },
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Center(
