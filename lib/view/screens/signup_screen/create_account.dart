@@ -13,6 +13,9 @@ class CreateAccount extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final data = ref.watch(signupProvider);
+    final showErrors = data.hasAttemptedSubmit;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -81,6 +84,9 @@ class CreateAccount extends ConsumerWidget {
                 MyTextfield(
                   hintText: "Eliakim Neequaye",
                   prefixIcon: Icon(LucideIcons.user),
+                  errorText: showErrors && data.fullName.isEmpty
+                      ? 'Full name is required'
+                      : null,
                   onChanged: (value) =>
                       ref.read(signupProvider.notifier).updateFullName(value),
                 ),
@@ -98,6 +104,9 @@ class CreateAccount extends ConsumerWidget {
                 MyTextfield(
                   hintText: "024 XXX XXXX",
                   prefixIcon: Icon(LucideIcons.phone),
+                  errorText: showErrors && data.phoneNumber.isEmpty
+                      ? 'Phone number is required'
+                      : null,
                   onChanged: (value) => ref
                       .read(signupProvider.notifier)
                       .updatePhoneNumber(value),
@@ -116,6 +125,9 @@ class CreateAccount extends ConsumerWidget {
                 MyTextfield(
                   hintText: "you@email.com",
                   prefixIcon: Icon(LucideIcons.mail),
+                  errorText: showErrors && data.email.isEmpty
+                      ? 'Email is required'
+                      : null,
                   onChanged: (value) =>
                       ref.read(signupProvider.notifier).updateEmail(value),
                 ),
@@ -157,13 +169,10 @@ class CreateAccount extends ConsumerWidget {
                   background: Theme.of(context).colorScheme.primary,
                   foreground: Theme.of(context).colorScheme.onPrimary,
                   onPressed: () {
-                    final data = ref.read(signupProvider);
                     if (data.fullName.isEmpty ||
                         data.phoneNumber.isEmpty ||
                         data.email.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fill in all fields')),
-                      );
+                      ref.read(signupProvider.notifier).markSubmitAttempted();
                       return;
                     }
                     Navigator.pushNamed(context, '/verification');

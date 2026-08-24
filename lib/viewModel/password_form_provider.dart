@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:momo_track/services/auth_service.dart';
 
 enum AuthFormStatus { idle, submitting, success, error }
-
-// --- Create password (signup) ---
 
 class CreatePasswordState {
   final String password;
@@ -51,10 +50,34 @@ class CreatePasswordNotifier extends Notifier<CreatePasswordState> {
   );
 
   Future<bool> submit(String email) async {
-    if (!state.passwordsMatch || !state.hasMinLength) {
+    if (state.password.isEmpty) {
       state = state.copyWith(
         status: AuthFormStatus.error,
-        errorMessage: 'Passwords must match and meet requirements',
+        errorMessage: 'Please enter a password',
+      );
+      return false;
+    }
+
+    if (state.confirmPassword.isEmpty) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Please confirm your password',
+      );
+      return false;
+    }
+
+    if (!state.passwordsMatch) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Passwords do not match',
+      );
+      return false;
+    }
+
+    if (!state.hasMinLength || !state.hasUppercase || !state.hasNumber) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Password does not meet all requirements',
       );
       return false;
     }
@@ -66,13 +89,23 @@ class CreatePasswordNotifier extends Notifier<CreatePasswordState> {
           .signUp(email: email, password: state.password);
       state = state.copyWith(status: AuthFormStatus.success);
       return true;
-    } catch (e) {
+    } on AuthApiException catch (_) {
       state = state.copyWith(
         status: AuthFormStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: 'Could not create account. Please try again.',
+      );
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Something went wrong. Please try again.',
       );
       return false;
     }
+  }
+
+  void clearStatus() {
+    state = state.copyWith(status: AuthFormStatus.idle, errorMessage: null);
   }
 
   void clear() => state = const CreatePasswordState();
@@ -82,8 +115,6 @@ final createPasswordProvider =
     NotifierProvider<CreatePasswordNotifier, CreatePasswordState>(
       CreatePasswordNotifier.new,
     );
-
-// --- Login (password) ---
 
 class LoginFormState {
   final String email;
@@ -124,10 +155,18 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       state = state.copyWith(password: value, status: AuthFormStatus.idle);
 
   Future<bool> submit() async {
-    if (state.email.isEmpty || state.password.isEmpty) {
+    if (state.email.isEmpty) {
       state = state.copyWith(
         status: AuthFormStatus.error,
-        errorMessage: 'Enter your email and password',
+        errorMessage: 'Please enter your email',
+      );
+      return false;
+    }
+
+    if (state.password.isEmpty) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Please enter your password',
       );
       return false;
     }
@@ -139,13 +178,23 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
           .signIn(email: state.email, password: state.password);
       state = state.copyWith(status: AuthFormStatus.success);
       return true;
-    } catch (e) {
+    } on AuthApiException catch (_) {
       state = state.copyWith(
         status: AuthFormStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: 'Incorrect password, try again',
+      );
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        status: AuthFormStatus.error,
+        errorMessage: 'Something went wrong. Please try again.',
       );
       return false;
     }
+  }
+
+  void clearStatus() {
+    state = state.copyWith(status: AuthFormStatus.idle, errorMessage: null);
   }
 
   void clear() => state = const LoginFormState();

@@ -7,6 +7,7 @@ class MyTextfield extends StatefulWidget {
   final bool obscureText;
   final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
+  final String? errorText;
 
   const MyTextfield({
     super.key,
@@ -15,6 +16,7 @@ class MyTextfield extends StatefulWidget {
     this.obscureText = false,
     this.onChanged,
     this.controller,
+    this.errorText,
   });
 
   @override
@@ -32,6 +34,9 @@ class _MyTextfieldState extends State<MyTextfield> {
 
   @override
   Widget build(BuildContext context) {
+    final hasError = widget.errorText != null;
+    final errorColor = Theme.of(context).colorScheme.error;
+
     return TextField(
       controller: widget.controller,
       obscureText: _obscured,
@@ -40,6 +45,7 @@ class _MyTextfieldState extends State<MyTextfield> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: TextStyle(color: Color(0xFF8B8D98)),
+        errorText: widget.errorText,
         prefixIcon: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 8.0),
           child: widget.prefixIcon,
@@ -66,6 +72,32 @@ class _MyTextfieldState extends State<MyTextfield> {
             width: 2.0,
             color: Theme.of(context).colorScheme.onPrimary,
           ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            width: 2.0,
+            color: hasError
+                ? errorColor
+                : Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            width: 2.0,
+            color: hasError
+                ? errorColor
+                : Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 2.0, color: errorColor),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 2.0, color: errorColor),
         ),
       ),
     );

@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/animation_controller.dart';
+import 'package:momo_track/services/auth_service.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Navigate after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/permissions');
-      }
-    });
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), _navigateNext);
+  }
+
+  Future<void> _navigateNext() async {
+    if (!mounted) return;
+
+    final authService = ref.read(authServiceProvider);
+    final session = authService.getCurrentSession;
+
+    if (session != null && !session.isExpired) {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
+      return;
+    }
+
+    final hasSeenPermissions = await authService.hasSeenPermissions();
+    if (!mounted) return;
+
+    if (hasSeenPermissions) {
+      Navigator.pushReplacementNamed(context, '/welcome');
+    } else {
+      Navigator.pushReplacementNamed(context, '/permissions');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(

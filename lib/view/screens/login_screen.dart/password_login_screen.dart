@@ -14,6 +14,13 @@ class PasswordLoginScreen extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final loginState = ref.watch(loginFormProvider);
+    ref.listen(loginFormProvider, (previous, next) {
+      if (next.status == AuthFormStatus.error) {
+        Future.delayed(const Duration(seconds: 3), () {
+          ref.read(loginFormProvider.notifier).clearStatus();
+        });
+      }
+    });
     final isSubmitting = loginState.status == AuthFormStatus.submitting;
 
     return Scaffold(

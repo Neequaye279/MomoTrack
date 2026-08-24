@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'view/theme/theme.dart';
 import 'view/screens/permissions_screen.dart';
@@ -20,11 +21,11 @@ import 'view/screens/mainapp_screens.dart/main_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://jwwwwudkhwxlxwwllgte.supabase.co/rest/v1/',
+    url: 'https://jwwwwudkhwxlxwwllgte.supabase.co',
     publishableKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3d3d3dWRraHd4bHh3d2xsZ3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NDk1NDcsImV4cCI6MjEwMTMyNTU0N30.gvc44zVzGuCq8HhiFo3KT1LlQ3-8svQB3DcDZHREqE8',
   );
-  runApp(MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =

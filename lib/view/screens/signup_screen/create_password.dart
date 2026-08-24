@@ -16,6 +16,13 @@ class CreatePassword extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final passwordState = ref.watch(createPasswordProvider);
+    ref.listen(createPasswordProvider, (previous, next) {
+      if (next.status == AuthFormStatus.error) {
+        Future.delayed(const Duration(seconds: 3), () {
+          ref.read(createPasswordProvider.notifier).clearStatus();
+        });
+      }
+    });
     final isSubmitting = passwordState.status == AuthFormStatus.submitting;
 
     return Scaffold(

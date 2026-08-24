@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final SupabaseClient _client = Supabase.instance.client;
@@ -42,8 +43,6 @@ class AuthService {
     return _client.auth.signOut();
   }
 
-  // --- Mock OTP (dev/testing only, no real SMS sent) ---
-
   Future<String> requestOtp(String phoneNumber) async {
     final code = (100000 + Random().nextInt(900000)).toString();
     final expiresAt = DateTime.now().add(const Duration(minutes: 5));
@@ -58,7 +57,7 @@ class AuthService {
         .timeout(const Duration(seconds: 10));
 
     debugPrint('MOCK OTP for $phoneNumber: $code');
-    return code; // dev-only — drop this return in production
+    return code;
   }
 
   Future<bool> verifyOtp(String phoneNumber, String enteredCode) async {
@@ -74,7 +73,7 @@ class AuthService {
 
   String _hashPin(String pin) {
     final userId = _client.auth.currentUser?.id ?? '';
-    final bytes = utf8.encode('$pin:$userId'); // salted with user id
+    final bytes = utf8.encode('$pin:$userId');
     return sha256.convert(bytes).toString();
   }
 
@@ -150,6 +149,16 @@ class AuthService {
         .timeout(const Duration(seconds: 10));
 
     return result?['biometrics_enabled'] == true;
+  }
+
+  Future<bool> hasSeenPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('has_seen_permissions') ?? false;
+  }
+
+  Future<void> markPermissionsSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_seen_permissions', true);
   }
 
   Session? get getCurrentSession => _client.auth.currentSession;
