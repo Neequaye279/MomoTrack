@@ -20,7 +20,7 @@ class Biometrics extends ConsumerWidget {
 
     ref.listen(biometricProvider, (previous, next) {
       if (next.status == BiometricStatus.enabled) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else if ((next.status == BiometricStatus.failed ||
               next.status == BiometricStatus.unsupported) &&
           next.errorMessage != null) {
@@ -126,7 +126,11 @@ class Biometrics extends ConsumerWidget {
                   onPressed: isBusy
                       ? () {}
                       : () {
-                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/home',
+                            (route) => false,
+                          );
                         },
                 ),
               ],

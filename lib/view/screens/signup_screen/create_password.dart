@@ -8,11 +8,24 @@ import 'package:momo_track/view/widgets/requirement_row.dart';
 import 'package:momo_track/viewModel/password_form_provider.dart';
 import 'package:momo_track/viewModel/signup_proivder.dart';
 
-class CreatePassword extends ConsumerWidget {
+class CreatePassword extends ConsumerStatefulWidget {
   const CreatePassword({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CreatePassword> createState() => _CreatePasswordState();
+}
+
+class _CreatePasswordState extends ConsumerState<CreatePassword> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(createPasswordProvider.notifier).clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final passwordState = ref.watch(createPasswordProvider);

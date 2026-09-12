@@ -6,9 +6,52 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   final SupabaseClient _client = Supabase.instance.client;
+  final _secureStorage = const FlutterSecureStorage();
+
+  Future<void> _storeLocalCredentials({
+    required String email,
+    required String password,
+    required String pin,
+  }) async {
+    final pinHash = _hashPin(pin);
+    await _secureStorage.write(key: 'local_email', value: email);
+    await _secureStorage.write(key: 'local_password', value: password);
+    await _secureStorage.write(key: 'local_pin_hash', value: pinHash);
+  }
+
+  Future<bool> hasLocalPinCredentials() async {
+    final email = await _secureStorage.read(key: 'local_email');
+    final password = await _secureStorage.read(key: 'local_password');
+    final pinHash = await _secureStorage.read(key: 'local_pin_hash');
+    return email != null && password != null && pinHash != null;
+  }
+
+  Future<AuthResponse> signInWithLocalPin(String pin) async {
+    final storedHash = await _secureStorage.read(key: 'local_pin_hash');
+    if (storedHash == null) throw Exception('No PIN set up on this device');
+
+    final bytes = utf8.encode(pin);
+    final enteredHash = sha256.convert(bytes).toString();
+    if (enteredHash != storedHash) throw Exception('Incorrect PIN');
+
+    final email = await _secureStorage.read(key: 'local_email');
+    final password = await _secureStorage.read(key: 'local_password');
+    if (email == null || password == null) {
+      throw Exception('No account linked to this device');
+    }
+
+    return await signIn(email: email, password: password);
+  }
+
+  Future<void> clearLocalPinCredentials() async {
+    await _secureStorage.delete(key: 'local_email');
+    await _secureStorage.delete(key: 'local_password');
+    await _secureStorage.delete(key: 'local_pin_hash');
+  }
 
   Future<AuthResponse> signUp({
     required String email,
@@ -104,6 +147,25 @@ class AuthService {
         .timeout(const Duration(seconds: 10));
 
     return result != null;
+  }
+
+  String _generateSecurePassword() {
+    final rand = Random.secure();
+    final bytes = List<int>.generate(32, (_) => rand.nextInt(256));
+    return base64UrlEncode(bytes);
+  }
+
+  Future<AuthResponse> signUpWithPin({
+    required String email,
+    required String pin,
+  }) async {
+    final password = _generateSecurePassword();
+    final response = await _client.auth.signUp(
+      email: email,
+      password: password,
+    );
+    await _storeLocalCredentials(email: email, password: password, pin: pin);
+    return response;
   }
 
   final LocalAuthentication _localAuth = LocalAuthentication();

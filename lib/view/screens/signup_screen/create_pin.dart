@@ -7,12 +7,26 @@ import 'package:momo_track/view/widgets/screen_button.dart';
 import 'package:momo_track/viewModel/pin_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:momo_track/services/auth_service.dart';
+import 'package:momo_track/viewModel/signup_proivder.dart';
 
-class CreatePin extends ConsumerWidget {
+class CreatePin extends ConsumerStatefulWidget {
   const CreatePin({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CreatePin> createState() => _CreatePinState();
+}
+
+class _CreatePinState extends ConsumerState<CreatePin> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(createPinProvider.notifier).clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -185,15 +199,20 @@ class CreatePin extends ConsumerWidget {
                       return;
                     }
                     try {
-                      await ref.read(authServiceProvider).setPin(pin);
+                      final email = ref.read(signupProvider).email;
+                      await ref
+                          .read(authServiceProvider)
+                          .signUpWithPin(email: email, pin: pin);
                       ref.read(createPinProvider.notifier).clear();
                       if (context.mounted) {
                         Navigator.pushNamed(context, '/biometrics');
                       }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to save PIN: $e')),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to save PIN: $e')),
+                        );
+                      }
                     }
                   },
                 ),

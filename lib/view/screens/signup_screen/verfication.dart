@@ -6,6 +6,7 @@ import 'package:momo_track/view/widgets/progress_stepper.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
 import 'package:momo_track/viewModel/otp_provider.dart';
 import 'package:momo_track/viewModel/signup_proivder.dart';
+import 'package:momo_track/main.dart';
 
 class Verfication extends ConsumerStatefulWidget {
   const Verfication({super.key});
@@ -14,10 +15,10 @@ class Verfication extends ConsumerStatefulWidget {
   ConsumerState<Verfication> createState() => _VerficationState();
 }
 
-class _VerficationState extends ConsumerState<Verfication> {
+class _VerficationState extends ConsumerState<Verfication> with RouteAware {
   final TextEditingController _codeController = TextEditingController();
   Timer? _timer;
-  int _secondsRemaining = 300; // 5 minutes, matches otp expiry
+  int _secondsRemaining = 300;
 
   @override
   void initState() {
@@ -25,7 +26,19 @@ class _VerficationState extends ConsumerState<Verfication> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _sendCode());
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    _sendCode();
+  }
+
   void _sendCode() {
+    _codeController.clear();
     final phone = ref.read(signupProvider).phoneNumber;
     ref.read(otpProvider.notifier).sendOtp(phone);
     _startTimer();
@@ -51,6 +64,7 @@ class _VerficationState extends ConsumerState<Verfication> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _timer?.cancel();
     _codeController.dispose();
     super.dispose();

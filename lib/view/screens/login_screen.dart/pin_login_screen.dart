@@ -4,7 +4,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/pin_dots.dart';
 import 'package:momo_track/view/widgets/numpad.dart';
 import 'package:momo_track/viewModel/pin_provider.dart';
-import 'package:momo_track/viewModel/biometric_provider.dart';
 import 'package:momo_track/services/auth_service.dart';
 
 class PinLoginScreen extends ConsumerStatefulWidget {
@@ -23,21 +22,21 @@ class _PinLoginScreenState extends ConsumerState<PinLoginScreen> {
       if (next.length == 6 && !_isVerifying) {
         setState(() => _isVerifying = true);
 
-        final isValid = await ref.read(authServiceProvider).verifyPin(next);
-
-        if (!mounted) return;
-
-        if (isValid) {
-          Navigator.pushReplacementNamed(context, '/home');
-          ref.read(biometricProvider.notifier).promptAndEnableInBackground();
-        } else {
+        try {
+          await ref.read(authServiceProvider).signInWithLocalPin(next);
+          if (!mounted) return;
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        } catch (e) {
+          if (!mounted) return;
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text('Incorrect PIN')));
           ref.read(loginPinProvider.notifier).clear();
         }
 
-        setState(() => _isVerifying = false);
+        if (mounted) {
+          setState(() => _isVerifying = false);
+        }
       }
     });
 
