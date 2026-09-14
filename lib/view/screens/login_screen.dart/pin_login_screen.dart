@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:momo_track/view/widgets/pin_dots.dart';
 import 'package:momo_track/view/widgets/numpad.dart';
 import 'package:momo_track/viewModel/pin_provider.dart';
+import 'package:momo_track/viewModel/biometric_provider.dart';
 import 'package:momo_track/services/auth_service.dart';
 
 class PinLoginScreen extends ConsumerStatefulWidget {
@@ -15,6 +16,21 @@ class PinLoginScreen extends ConsumerStatefulWidget {
 
 class _PinLoginScreenState extends ConsumerState<PinLoginScreen> {
   bool _isVerifying = false;
+
+  Future<void> _handleBiometricLogin() async {
+    setState(() => _isVerifying = true);
+    try {
+      await ref.read(authServiceProvider).signInWithBiometrics();
+      if (!mounted) return;
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Biometric login failed: $e')));
+    }
+    if (mounted) setState(() => _isVerifying = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +58,7 @@ class _PinLoginScreenState extends ConsumerState<PinLoginScreen> {
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final biometricAvailable = ref.watch(biometricsEnabledLocalProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -55,27 +72,62 @@ class _PinLoginScreenState extends ConsumerState<PinLoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceBright,
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.05),
-                      width: 1.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceBright,
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.05),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: Icon(LucideIcons.chevronLeft),
+                        color: Color(0xFF8B8D98),
+                        iconSize: 20.0,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
-                  ),
-                  child: IconButton(
-                    icon: Icon(LucideIcons.chevronLeft),
-                    color: Color(0xFF8B8D98),
-                    iconSize: 20.0,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                    biometricAvailable.when(
+                      data: (available) => available
+                          ? Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.2),
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: IconButton(
+                                icon: Icon(LucideIcons.fingerprint),
+                                color: Theme.of(context).colorScheme.primary,
+                                iconSize: 20.0,
+                                onPressed: _isVerifying
+                                    ? null
+                                    : _handleBiometricLogin,
+                              ),
+                            )
+                          : const SizedBox(width: 40, height: 40),
+                      loading: () => const SizedBox(width: 40, height: 40),
+                      error: (_, __) => const SizedBox(width: 40, height: 40),
+                    ),
+                  ],
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 Text(

@@ -5,26 +5,12 @@ import 'package:momo_track/viewModel/pin_provider.dart';
 
 class NumPad extends ConsumerWidget {
   final NotifierProvider<PinNotifier, String> provider;
-  final VoidCallback? onBiometricTap;
 
-  const NumPad({super.key, required this.provider, this.onBiometricTap});
+  const NumPad({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final keys = [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'bio',
-      '0',
-      'del',
-    ];
+    final keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'];
 
     return GridView.count(
       crossAxisCount: 3,
@@ -40,9 +26,7 @@ class NumPad extends ConsumerWidget {
             final notifier = ref.read(provider.notifier);
             if (key == 'del') {
               notifier.removeDigit();
-            } else if (key == 'bio') {
-              onBiometricTap?.call();
-            } else {
+            } else if (key.isNotEmpty) {
               notifier.addDigit(key);
             }
           },
@@ -60,7 +44,6 @@ class _NumKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isBio = keyValue == 'bio';
     final isDel = keyValue == 'del';
     final isEmpty = keyValue.isEmpty;
 
@@ -81,13 +64,7 @@ class _NumKey extends StatelessWidget {
           ],
         ),
         child: Center(
-          child: isBio
-              ? Icon(
-                  LucideIcons.fingerprint,
-                  size: 26,
-                  color: Theme.of(context).colorScheme.onSurface,
-                )
-              : isDel
+          child: isDel
               ? Icon(
                   LucideIcons.x,
                   size: 22,

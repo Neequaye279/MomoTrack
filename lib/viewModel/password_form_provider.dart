@@ -4,6 +4,8 @@ import 'package:momo_track/services/auth_service.dart';
 
 enum AuthFormStatus { idle, submitting, success, error }
 
+// --- Create password (signup) ---
+
 class CreatePasswordState {
   final String password;
   final String confirmPassword;
@@ -84,9 +86,12 @@ class CreatePasswordNotifier extends Notifier<CreatePasswordState> {
 
     state = state.copyWith(status: AuthFormStatus.submitting);
     try {
-      await ref
-          .read(authServiceProvider)
-          .signUp(email: email, password: state.password);
+      final authService = ref.read(authServiceProvider);
+      await authService.signUp(email: email, password: state.password);
+      await authService.storeCredentialsForBiometricLogin(
+        email: email,
+        password: state.password,
+      );
       state = state.copyWith(status: AuthFormStatus.success);
       return true;
     } on AuthApiException catch (_) {
@@ -115,6 +120,8 @@ final createPasswordProvider =
     NotifierProvider<CreatePasswordNotifier, CreatePasswordState>(
       CreatePasswordNotifier.new,
     );
+
+// --- Login (password) ---
 
 class LoginFormState {
   final String email;
@@ -173,9 +180,12 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
 
     state = state.copyWith(status: AuthFormStatus.submitting);
     try {
-      await ref
-          .read(authServiceProvider)
-          .signIn(email: state.email, password: state.password);
+      final authService = ref.read(authServiceProvider);
+      await authService.signIn(email: state.email, password: state.password);
+      await authService.storeCredentialsForBiometricLogin(
+        email: state.email,
+        password: state.password,
+      );
       state = state.copyWith(status: AuthFormStatus.success);
       return true;
     } on AuthApiException catch (_) {

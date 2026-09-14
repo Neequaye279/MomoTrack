@@ -12,15 +12,30 @@ class AuthService {
   final SupabaseClient _client = Supabase.instance.client;
   final _secureStorage = const FlutterSecureStorage();
 
+  String _hashLocalPin(String pin) {
+    final bytes = utf8.encode(pin);
+    return sha256.convert(bytes).toString();
+  }
+
   Future<void> _storeLocalCredentials({
     required String email,
     required String password,
     required String pin,
   }) async {
-    final pinHash = _hashPin(pin);
+    final pinHash = _hashLocalPin(pin);
     await _secureStorage.write(key: 'local_email', value: email);
     await _secureStorage.write(key: 'local_password', value: password);
     await _secureStorage.write(key: 'local_pin_hash', value: pinHash);
+  }
+
+  // Used by password-flow signup/login, where there's no PIN involved,
+  // so credentials are stored without a pin hash.
+  Future<void> storeCredentialsForBiometricLogin({
+    required String email,
+    required String password,
+  }) async {
+    await _secureStorage.write(key: 'local_email', value: email);
+    await _secureStorage.write(key: 'local_password', value: password);
   }
 
   Future<bool> hasLocalPinCredentials() async {
@@ -34,8 +49,7 @@ class AuthService {
     final storedHash = await _secureStorage.read(key: 'local_pin_hash');
     if (storedHash == null) throw Exception('No PIN set up on this device');
 
-    final bytes = utf8.encode(pin);
-    final enteredHash = sha256.convert(bytes).toString();
+    final enteredHash = _hashLocalPin(pin);
     if (enteredHash != storedHash) throw Exception('Incorrect PIN');
 
     final email = await _secureStorage.read(key: 'local_email');
@@ -51,6 +65,7 @@ class AuthService {
     await _secureStorage.delete(key: 'local_email');
     await _secureStorage.delete(key: 'local_password');
     await _secureStorage.delete(key: 'local_pin_hash');
+    await _secureStorage.delete(key: 'biometrics_enabled_local');
   }
 
   Future<AuthResponse> signUp({
@@ -189,6 +204,7 @@ class AuthService {
     }
   }
 
+  // Supabase-stored flag — requires a session, used for cross-device settings sync
   Future<void> setBiometricsEnabled(bool enabled) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return;
@@ -211,6 +227,32 @@ class AuthService {
         .timeout(const Duration(seconds: 10));
 
     return result?['biometrics_enabled'] == true;
+  }
+
+  // Local-only flag — no session required, checkable from the login screen
+  Future<void> setBiometricsEnabledLocal(bool enabled) async {
+    await _secureStorage.write(
+      key: 'biometrics_enabled_local',
+      value: enabled.toString(),
+    );
+  }
+
+  Future<bool> getBiometricsEnabledLocal() async {
+    final value = await _secureStorage.read(key: 'biometrics_enabled_local');
+    return value == 'true';
+  }
+
+  Future<AuthResponse> signInWithBiometrics() async {
+    final success = await authenticateWithBiometrics();
+    if (!success) throw Exception('Biometric authentication failed');
+
+    final email = await _secureStorage.read(key: 'local_email');
+    final password = await _secureStorage.read(key: 'local_password');
+    if (email == null || password == null) {
+      throw Exception('No credentials stored for biometric login');
+    }
+
+    return await signIn(email: email, password: password);
   }
 
   Future<bool> hasSeenPermissions() async {

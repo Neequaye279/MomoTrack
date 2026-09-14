@@ -5,12 +5,36 @@ import 'package:momo_track/view/widgets/my_textfield.dart';
 import 'package:momo_track/view/widgets/screen_button.dart';
 import 'package:momo_track/viewModel/password_form_provider.dart';
 import 'package:momo_track/viewModel/biometric_provider.dart';
+import 'package:momo_track/services/auth_service.dart';
 
-class PasswordLoginScreen extends ConsumerWidget {
+class PasswordLoginScreen extends ConsumerStatefulWidget {
   const PasswordLoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PasswordLoginScreen> createState() =>
+      _PasswordLoginScreenState();
+}
+
+class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
+  bool _isBiometricLoading = false;
+
+  Future<void> _handleBiometricLogin() async {
+    setState(() => _isBiometricLoading = true);
+    try {
+      await ref.read(authServiceProvider).signInWithBiometrics();
+      if (!mounted) return;
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Biometric login failed: $e')));
+    }
+    if (mounted) setState(() => _isBiometricLoading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final loginState = ref.watch(loginFormProvider);
@@ -22,6 +46,7 @@ class PasswordLoginScreen extends ConsumerWidget {
       }
     });
     final isSubmitting = loginState.status == AuthFormStatus.submitting;
+    final biometricAvailable = ref.watch(biometricsEnabledLocalProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -35,27 +60,62 @@ class PasswordLoginScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 38,
-                  width: 38,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceBright,
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.05),
-                      width: 1.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 38,
+                      width: 38,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceBright,
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.05),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: Icon(LucideIcons.chevronLeft),
+                        color: Color(0xFF8B8D98),
+                        iconSize: 18.0,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
-                  ),
-                  child: IconButton(
-                    icon: Icon(LucideIcons.chevronLeft),
-                    color: Color(0xFF8B8D98),
-                    iconSize: 18.0,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                    biometricAvailable.when(
+                      data: (available) => available
+                          ? Container(
+                              height: 38,
+                              width: 38,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.2),
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: IconButton(
+                                icon: Icon(LucideIcons.fingerprint),
+                                color: Theme.of(context).colorScheme.primary,
+                                iconSize: 18.0,
+                                onPressed: _isBiometricLoading
+                                    ? null
+                                    : _handleBiometricLogin,
+                              ),
+                            )
+                          : const SizedBox(width: 38, height: 38),
+                      loading: () => const SizedBox(width: 38, height: 38),
+                      error: (_, __) => const SizedBox(width: 38, height: 38),
+                    ),
+                  ],
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 Text(
@@ -216,7 +276,11 @@ class PasswordLoginScreen extends ConsumerWidget {
                               .submit();
                           if (!success || !context.mounted) return;
 
-                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/home',
+                            (route) => false,
+                          );
                           ref
                               .read(biometricProvider.notifier)
                               .promptAndEnableInBackground();

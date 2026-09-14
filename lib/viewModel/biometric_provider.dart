@@ -41,8 +41,11 @@ class BiometricNotifier extends Notifier<BiometricState> {
         .authenticateWithBiometrics();
 
     if (success) {
-      await ref.read(authServiceProvider).setBiometricsEnabled(true);
+      final authService = ref.read(authServiceProvider);
+      await authService.setBiometricsEnabled(true);
+      await authService.setBiometricsEnabledLocal(true);
       state = state.copyWith(status: BiometricStatus.enabled);
+      ref.invalidate(biometricsEnabledLocalProvider);
     } else {
       state = state.copyWith(
         status: BiometricStatus.failed,
@@ -86,3 +89,12 @@ class BiometricNotifier extends Notifier<BiometricState> {
 final biometricProvider = NotifierProvider<BiometricNotifier, BiometricState>(
   BiometricNotifier.new,
 );
+
+// Session-free check for whether the login screens should show a
+// fingerprint/Face ID shortcut button.
+final biometricsEnabledLocalProvider = FutureProvider<bool>((ref) async {
+  final authService = ref.read(authServiceProvider);
+  final canUse = await authService.canUseBiometrics();
+  if (!canUse) return false;
+  return authService.getBiometricsEnabledLocal();
+});
