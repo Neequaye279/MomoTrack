@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.momo_track"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

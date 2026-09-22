@@ -29,7 +29,6 @@ class BalanceCard extends StatelessWidget {
                 width: borderWidth,
               )
             : null,
-        // dark green-black wash instead of flat surface
         color: isDark ? null : null,
         gradient: isDark
             ? LinearGradient(
@@ -75,7 +74,7 @@ class BalanceCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(23), // 24 - borderWidth
+                padding: const EdgeInsets.all(23),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

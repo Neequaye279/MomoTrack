@@ -4,12 +4,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'view/theme/theme.dart';
 import 'view/screens/permissions_screen.dart';
 import 'view/screens/welcome_screen.dart';
-import 'view/screens/login_screen.dart/pin_login_screen.dart';
 import 'view/screens/login_screen.dart/password_login_screen.dart';
 import 'view/screens/signup_screen/biometrics.dart';
 import 'view/screens/signup_screen/create_account.dart';
 import 'view/screens/signup_screen/create_password.dart';
-import 'view/screens/signup_screen/create_pin.dart';
 import 'view/screens/signup_screen/verfication.dart';
 import 'view/screens/splash_screen.dart';
 import 'view/screens/mainapp_screens.dart/history.dart';
@@ -59,12 +57,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/permissions': (context) => PermissionsScreen(),
         '/welcome': (context) => WelcomeScreen(),
-        '/pinlogin': (context) => PinLoginScreen(),
         '/passwordlogin': (context) => PasswordLoginScreen(),
         '/biometrics': (context) => Biometrics(),
         '/createaccount': (context) => CreateAccount(),
         '/createpassword': (context) => CreatePassword(),
-        '/createpin': (context) => CreatePin(),
         '/verification': (context) => Verfication(),
         '/home': (context) => Home(),
         '/history': (context) => History(),

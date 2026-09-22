@@ -183,7 +183,7 @@ class CreateAccount extends ConsumerWidget {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, '/pinlogin');
+                      Navigator.pushReplacementNamed(context, '/passwordlogin');
                     },
                     child: Text.rich(
                       TextSpan(

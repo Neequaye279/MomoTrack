@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:momo_track/view/widgets/balance_card.dart';
 import 'package:momo_track/view/widgets/status_card.dart';
+import 'package:momo_track/view/widgets/floatbalance_card.dart';
+import 'package:momo_track/view/widgets/recent_transactions.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:momo_track/services/auth_service.dart';
 
-class Home extends StatelessWidget {
+class Home extends ConsumerWidget {
   const Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.height;
-    final screenHeight = MediaQuery.of(context).size.width;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -49,6 +53,22 @@ class Home extends StatelessWidget {
                       ],
                     ),
                     Spacer(),
+                    // TEMP: debug sign-out button for testing auth flows.
+                    // Remove or move into a real settings screen later.
+                    IconButton(
+                      icon: Icon(
+                        LucideIcons.logOut,
+                        color: Theme.of(context).colorScheme.error,
+                        size: 20.0,
+                      ),
+                      onPressed: () async {
+                        await ref.read(authServiceProvider).signOut();
+                        if (context.mounted) {
+                          Navigator.pushReplacementNamed(context, '/welcome');
+                        }
+                      },
+                    ),
+                    SizedBox(width: screenWidth * 0.02),
                     Container(
                       width: 45.0,
                       height: 45.0,
@@ -106,9 +126,9 @@ class Home extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: screenHeight * 0.04),
+                SizedBox(height: screenHeight * 0.03),
                 BalanceCard(balance: 34567.00, weeklyChange: 735),
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -132,6 +152,79 @@ class Home extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: screenHeight * 0.03),
+                FloatbalanceCard(),
+                SizedBox(height: screenHeight * 0.03),
+                /* Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.tertiary.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                  ),
+
+                  child: Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14.0,
+                        vertical: 14.0,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.triangleAlert,
+                            color: Theme.of(context).colorScheme.tertiary,
+                            size: 22.0,
+                          ),
+                          SizedBox(width: 12.0),
+                          Expanded(
+                            child: Text(
+                              "High withdrawal activity detected today",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.tertiary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+               ),*/
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Recent",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "See all",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RecentTransactionsSection(),
               ],
             ),
           ),

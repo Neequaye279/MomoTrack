@@ -16,9 +16,9 @@ class StatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 118.0,
-      width: 118.0,
-      padding: EdgeInsets.all(10.0),
+      height: 106.0,
+      width: 106.0,
+      padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
         border: Border.all(color: color.withValues(alpha: 0.12), width: 1.5),
@@ -40,7 +40,7 @@ class StatusCard extends StatelessWidget {
             type,
             style: TextStyle(
               color: Color(0xFF8B8D98),
-              fontSize: 13.0,
+              fontSize: 11.0,
               letterSpacing: 1.0,
               fontWeight: FontWeight.bold,
             ),
@@ -50,7 +50,7 @@ class StatusCard extends StatelessWidget {
             value,
             style: TextStyle(
               color: color,
-              fontSize: 18.0,
+              fontSize: 15.0,
               fontWeight: FontWeight.bold,
             ),
           ),

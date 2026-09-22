@@ -81,7 +81,7 @@ class _VerficationState extends ConsumerState<Verfication> with RouteAware {
 
     ref.listen(otpProvider, (previous, next) {
       if (next.status == OtpStatus.verified) {
-        Navigator.pushNamed(context, '/createpin');
+        Navigator.pushNamed(context, '/createpassword');
       } else if (next.status == OtpStatus.error && next.errorMessage != null) {
         ScaffoldMessenger.of(
           context,

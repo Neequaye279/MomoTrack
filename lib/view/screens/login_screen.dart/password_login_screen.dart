@@ -60,62 +60,27 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 38,
-                      width: 38,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceBright,
-                        borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.05),
-                          width: 1.0,
-                        ),
-                      ),
-                      child: IconButton(
-                        icon: Icon(LucideIcons.chevronLeft),
-                        color: Color(0xFF8B8D98),
-                        iconSize: 18.0,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
+                Container(
+                  height: 38,
+                  width: 38,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceBright,
+                    borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.05),
+                      width: 1.0,
                     ),
-                    biometricAvailable.when(
-                      data: (available) => available
-                          ? Container(
-                              height: 38,
-                              width: 38,
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12.0),
-                                border: Border.all(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.2),
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: IconButton(
-                                icon: Icon(LucideIcons.fingerprint),
-                                color: Theme.of(context).colorScheme.primary,
-                                iconSize: 18.0,
-                                onPressed: _isBiometricLoading
-                                    ? null
-                                    : _handleBiometricLogin,
-                              ),
-                            )
-                          : const SizedBox(width: 38, height: 38),
-                      loading: () => const SizedBox(width: 38, height: 38),
-                      error: (_, __) => const SizedBox(width: 38, height: 38),
-                    ),
-                  ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(LucideIcons.chevronLeft),
+                    color: Color(0xFF8B8D98),
+                    iconSize: 18.0,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 Text(
@@ -132,71 +97,6 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                   style: TextStyle(
                     color: Color(0xFF8B8D98),
                     fontSize: screenHeight * 0.02,
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.03),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(14.0),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            ref.read(loginFormProvider.notifier).clear();
-                            Navigator.pushReplacementNamed(
-                              context,
-                              '/pinlogin',
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10.0),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(11.0),
-                            ),
-                            child: Text(
-                              "PIN",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 11.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(11.0),
-                          ),
-                          child: Text(
-                            "Password",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w700,
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.black
-                                  : Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
@@ -311,6 +211,69 @@ class _PasswordLoginScreenState extends ConsumerState<PasswordLoginScreen> {
                         ],
                       ),
                     ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                Center(
+                  child: Column(
+                    children: [
+                      biometricAvailable.when(
+                        data: (available) => available
+                            ? GestureDetector(
+                                onTap: _isBiometricLoading
+                                    ? null
+                                    : _handleBiometricLogin,
+                                child: Container(
+                                  width: 72,
+                                  height: 72,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).colorScheme.primary
+                                        .withValues(alpha: 0.08),
+                                    border: Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withValues(alpha: 0.4),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.fingerprint,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    size: 32.0,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                      biometricAvailable.when(
+                        data: (available) => available
+                            ? Padding(
+                                padding: EdgeInsets.only(
+                                  top: screenHeight * 0.015,
+                                ),
+                                child: Text(
+                                  "BIOMETRIC LOGIN",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                    ],
                   ),
                 ),
               ],
