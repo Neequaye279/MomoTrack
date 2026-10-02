@@ -22,20 +22,23 @@ class BottomNavBar extends StatelessWidget {
       _NavItem(icon: LucideIcons.settings, label: 'Settings'),
     ];
 
-    return Container(
-      color: scheme.surface,
-      padding: const EdgeInsets.only(top: 10, bottom: 20, left: 8, right: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          return _NavBarItem(
-            icon: items[index].icon,
-            label: items[index].label,
-            isActive: index == currentIndex,
-            scheme: scheme,
-            onTap: () => onTabSelected(index),
-          );
-        }),
+    return SafeArea(
+      top: false,
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: const EdgeInsets.only(top: 10, bottom: 12, left: 8, right: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(items.length, (index) {
+            return _NavBarItem(
+              icon: items[index].icon,
+              label: items[index].label,
+              isActive: index == currentIndex,
+              scheme: scheme,
+              onTap: () => onTabSelected(index),
+            );
+          }),
+        ),
       ),
     );
   }

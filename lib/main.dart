@@ -31,6 +31,17 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
+class NoGlowScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return child;
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -39,6 +50,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       scaffoldMessengerKey: scaffoldMessengerKey,
       navigatorObservers: [routeObserver],
+      scrollBehavior: NoGlowScrollBehavior(),
       title: "MoMo Track",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -62,11 +74,11 @@ class MyApp extends StatelessWidget {
         '/createaccount': (context) => CreateAccount(),
         '/createpassword': (context) => CreatePassword(),
         '/verification': (context) => Verfication(),
-        '/home': (context) => Home(),
+        '/mainHome': (context) => Home(),
         '/history': (context) => History(),
         '/reports': (context) => Reports(),
         '/settings': (context) => Settings(),
-        '/main': (context) => MainScreen(),
+        '/home': (context) => MainScreen(),
       },
     );
   }

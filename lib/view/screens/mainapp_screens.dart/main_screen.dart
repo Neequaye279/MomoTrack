@@ -19,7 +19,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: SafeArea(
+        top: true,
+        bottom: false, // bottom inset is handled by BottomNavBar's own SafeArea
+        child: IndexedStack(index: _currentIndex, children: _screens),
+      ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTabSelected: (index) {
