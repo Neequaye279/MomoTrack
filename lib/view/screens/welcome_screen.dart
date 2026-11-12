@@ -123,12 +123,11 @@ class WelcomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ===== HEADER =====
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Today's activity",
+                            "Today's summary",
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                               fontSize: screenWidth * 0.04,
@@ -164,8 +163,6 @@ class WelcomeScreen extends StatelessWidget {
                       ),
 
                       SizedBox(height: screenHeight * 0.02),
-
-                      // ===== GRAPH =====
                       SizedBox(
                         height: screenHeight * 0.16,
                         width: double.infinity,
@@ -175,10 +172,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       SizedBox(height: screenHeight * 0.02),
-
-                      // ===== SINGLE DIVIDER (UNDER GRAPH) =====
                       Container(
                         height: 1,
                         width: double.infinity,
@@ -186,10 +180,7 @@ class WelcomeScreen extends StatelessWidget {
                           context,
                         ).colorScheme.onSurface.withValues(alpha: 0.06),
                       ),
-
                       SizedBox(height: screenHeight * 0.02),
-
-                      // ===== CASH IN / CASH OUT =====
                       Row(
                         children: [
                           Expanded(
@@ -255,7 +246,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.08),
+                SizedBox(height: screenHeight * 0.06),
                 Column(
                   children: [
                     ScreenButton(
@@ -266,7 +257,7 @@ class WelcomeScreen extends StatelessWidget {
                         Navigator.pushNamed(context, '/createaccount');
                       },
                     ),
-                    SizedBox(height: screenHeight * 0.03),
+                    SizedBox(height: screenHeight * 0.02),
                     ScreenButton(
                       buttonText: "Sign In",
                       background: Theme.of(context).colorScheme.surface,
